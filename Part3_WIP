@@ -1,0 +1,22 @@
+clf
+mean = 0;
+for k = 1:80
+    mean = mean + phi_unwrapped(:,k)/80;
+end
+demean_phi = phi_unwrapped - mean;
+[U,S,V] = svd(demean_phi);
+for k = 1:4
+    plot(U(:,k))
+    hold on
+end
+for k = 1:4
+    figure(2)
+    plot(V(:,k))
+    hold on
+end
+s = diag(S);
+figure(3)
+plot(cumsum(s.^2)./sum(s.^2), 'bo', 'MarkerFaceColor','b','MarkerSize',6)
+xlabel("Singular Values");
+ylabel("% Information Retained")
+title("Strength of Singular Values")
