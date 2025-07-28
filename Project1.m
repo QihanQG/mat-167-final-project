@@ -87,8 +87,8 @@ hold off;
 s = diag(S);
 figure;
 plot(cumsum(s.^2)./sum(s.^2), 'bo', 'MarkerFaceColor','b','MarkerSize',6)
-xlabel("Mode k");  
-ylabel("Cumulative energy "); 
+xlabel("kth Singular Value");  
+ylabel("% Information Retained"); 
 title("Strength of Singular Values")
 
 %% Part 4: 
