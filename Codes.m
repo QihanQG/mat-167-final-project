@@ -3,16 +3,16 @@
 clear; clc; close all;
 load('fluidE.mat');
 
-m = size(XX, 1); 
-n = size(XX, 2); 
+[m,n] = size(XX);
 
 disp('Data:');
 disp(['Number of spatial points: ', num2str(m)]);
 disp(['Number of time points: ', num2str(n)]);
-disp(['Space scale (micrometers): ', num2str(space_scale)]);
+disp(['Space scale (\mum): ', num2str(space_scale)]);
 disp(['Time scale (seconds): ', num2str(time_scale)]);
 
-figure;
+%All time steps.
+figure; clf;
 for i = 1:n
     plot(XX(:,i), YY(:,i));
     hold on;
@@ -20,12 +20,12 @@ end
 hold off;
 axis equal;
 grid on;
-xlabel('X  (micrometers)');
-ylabel('Y  (micrometers)');
+xlabel('X  (\mum)');
+ylabel('Y  (\mum)');
 title('All flagellar shapes over time');
 
 % Plot first few time steps
-figure;
+figure; clf;
 for i = 1:5
     plot(XX(:,i), YY(:,i));
     hold on;
@@ -33,14 +33,11 @@ end
 hold off;
 axis equal;
 grid on;
-xlabel('X  (micrometers)');
-ylabel('Y  (micrometers)');
+xlabel('X  (\mum)');
+ylabel('Y  (\mum)');
 title('First 5 time steps');
 
 %% Part 2
-
-[m, n] = size(XX); 
-
 dx = diff(XX, 1, 1);  
 dy = diff(YY, 1, 1);  
 phi = atan2(dy, dx);
@@ -50,15 +47,15 @@ for i = 1:n
     phi_unwrapped(:,i) = unwrap(phi(:,i));
 end
 
-delta_s = space_scale; % Distance between two adjacent points in micrometers 
-delta_t = time_scale;  % Time between frames in seconds
+delta_s = space_scale; % Distance between two adjacent points
+delta_t = time_scale;  % Time between frames
 
 s = (0:size(phi_unwrapped,1)-1)' * delta_s; % Position where phi is defined
 t = (0:n-1)' * delta_t; % When phi is calculated                   
 
-figure;
+figure; clf;
 pcolor(s, t, phi_unwrapped');
-shading flat;
+shading interp;
 colormap(jet);
 colorbar;
 xlabel('(\mum): Position along the flagellum where \phi(s,t) is measured', 'FontSize', 12);
