@@ -74,12 +74,14 @@ figure; clf; hold on;
 for k = 1:4
     plot(U(:,k))
 end
+title('First 4 Shape modes');
 hold off;
 
 figure; clf; hold on;
 for k = 1:4
     plot(V(:,k))
 end
+title('First 4 Temporal Modes');
 hold off;
 
 s = diag(S);
