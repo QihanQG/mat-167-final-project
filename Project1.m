@@ -118,6 +118,7 @@ B_2 = Soln_2(2,1);
 V_1_fit = A_1 * cos(theta) + B_1 * sin(theta);
 V_2_fit = A_2 * cos(theta) + B_2 * sin(theta);
 plot(V_1_fit, V_2_fit, 'g-', 'LineWidth', 2);
+legend('Original Data','Least Squares Approximation')
 hold off;
 
 
