@@ -1,6 +1,43 @@
-%% Part 2
+%% Part 1
 
-load('fluidE.mat'); 
+clear; clc; close all;
+load('fluidE.mat');
+
+m = size(XX, 1); 
+n = size(XX, 2); 
+
+disp('Data:');
+disp(['Number of spatial points: ', num2str(m)]);
+disp(['Number of time points: ', num2str(n)]);
+disp(['Space scale (micrometers): ', num2str(space_scale)]);
+disp(['Time scale (seconds): ', num2str(time_scale)]);
+
+figure;
+for i = 1:n
+    plot(XX(:,i), YY(:,i));
+    hold on;
+end
+hold off;
+axis equal;
+grid on;
+xlabel('X  (micrometers)');
+ylabel('Y  (micrometers)');
+title('All flagellar shapes over time');
+
+% Plot first few time steps
+figure;
+for i = 1:5
+    plot(XX(:,i), YY(:,i));
+    hold on;
+end
+hold off;
+axis equal;
+grid on;
+xlabel('X  (micrometers)');
+ylabel('Y  (micrometers)');
+title('First 5 time steps');
+
+%% Part 2
 
 [m, n] = size(XX); 
 
@@ -35,17 +72,21 @@ grid off;
 phi_mean = mean(phi_unwrapped, 2);
 demean_phi = phi_unwrapped - phi_mean;
 [U,S,V] = svd(demean_phi, 'econ');
+
+figure; clf; hold on;
 for k = 1:4
     plot(U(:,k))
-    hold on
 end
+hold off;
+
+figure; clf; hold on;
 for k = 1:4
-    figure(2)
     plot(V(:,k))
-    hold on
 end
+hold off;
+
 s = diag(S);
-figure(3)
+figure;
 plot(cumsum(s.^2)./sum(s.^2), 'bo', 'MarkerFaceColor','b','MarkerSize',6)
 xlabel("Mode k");  
 ylabel("Cumulative energy "); 
@@ -56,7 +97,6 @@ title("Strength of Singular Values")
 V_1 = S(1,1) * V(:,1);
 V_2 = S(2,2) * V(:,2);
 figure;
-
 plot(V_1, V_2, '.','MarkerFacecolor','r','Markersize', 10);
 hold on;
 hold off;
@@ -85,32 +125,38 @@ hold off;
 %% Part 5:
 
 phi_recon = zeros(size(phi_unwrapped));
-for k = 1:size(phi_unwrapped, 2)
-    phi_recon(:,k) = phi_mean + V_1_fit(k) * U(:,1) + V_2_fit(k) * U(:,2);
+for i = 1:size(phi_unwrapped, 2)
+    phi_recon(:,i) = phi_mean + V_1_fit(i) * U(:,1) + V_2_fit(i) * U(:,2);
 end
 
-m_spatial = size(phi_unwrapped, 1) + 1;  
-n_time = size(phi_unwrapped, 2);         
-X_recon = zeros(m_spatial, n_time);
-Y_recon = zeros(m_spatial, n_time);
-period_length = min(30, n_time);
-
+X_recon = zeros(m, n);
+Y_recon = zeros(m, n);
 figure;
-for k = 1:min(5, period_length)
-    X_orig_k = [0; cumsum(space_scale * cos(phi_unwrapped(:,k)))];
-    Y_orig_k = [0; cumsum(space_scale * sin(phi_unwrapped(:,k)))];
+for i = 1:10
+    % Original positions
+    x_og = zeros(m, 1);
+    y_og = zeros(m, 1);
+    for j = 2:m
+        x_og(j) = x_og(j-1) + space_scale * cos(phi_unwrapped(j-1, i));
+        y_og(j) = y_og(j-1) + space_scale * sin(phi_unwrapped(j-1, i));
+    end
     
-    X_recon_k = [0; cumsum(space_scale * cos(phi_recon(:,k)))];
-    Y_recon_k = [0; cumsum(space_scale * sin(phi_recon(:,k)))];
+    % Reconstructed positions
+    x_recon = zeros(m, 1);
+    y_recon = zeros(m, 1);
+    for j = 2:m
+        x_recon(j) = x_recon(j-1) + space_scale * cos(phi_recon(j-1, i));
+        y_recon(j) = y_recon(j-1) + space_scale * sin(phi_recon(j-1, i));
+    end
     
-    plot(X_orig_k, Y_orig_k, 'b-');  
+    plot(x_og, y_og, 'b-');
     hold on;
-    plot(X_recon_k, Y_recon_k, 'r--');  
+    plot(x_recon, y_recon, 'r--');
 end
-xlabel('X  (\mum)');
-ylabel('Y  (\mum)');
-title('1st Period: Original vs Reconstructed Flagellar Shapes');
+hold off;
+xlabel('X');
+ylabel('Y');
+title('Original vs Reconstructed Shapes');
 legend('Original', 'Reconstructed');
 axis equal;
 grid on;
-hold off;
