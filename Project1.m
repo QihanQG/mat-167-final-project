@@ -3,6 +3,8 @@
 clear; clc; close all;
 load('fluidE.mat');
 
+% m = Number of points along the flagellum you tracked.
+% n = number of frames(time steps) recorded
 [m,n] = size(XX);
 
 disp('Data:');
@@ -31,21 +33,27 @@ for i = 1:5
     hold on;
 end
 hold off;
-axis equal;
+axis equal;  % Make sure  x and y scales match, So that flagellar curvature isn't distored.
 grid on;
 xlabel('X  (\mum)');
 ylabel('Y  (\mum)');
 title('First 5 time steps');
 
 %% Part 2
-dx = diff(XX, 1, 1);  
-dy = diff(YY, 1, 1);  
-phi = atan2(dy, dx);
-phi_unwrapped = zeros(size(phi));
 
-for i = 1:n
+phi = zeros(m-1, n); 
+for i = 1:80 
+    dx = diff(XX(:,i));  % [x2-x1, ..., x32-x31] at time i
+    dy = diff(YY(:,i));
+    phi(:,i) = atan2(dy, dx);  % Store column i
+end
+
+%unwrap angles.
+phi_unwrapped = zeros(size(phi)); 
+for i = 1:80
     phi_unwrapped(:,i) = unwrap(phi(:,i));
 end
+
 
 delta_s = space_scale; % Distance between two adjacent points
 delta_t = time_scale;  % Time between frames
@@ -58,14 +66,13 @@ pcolor(s, t, phi_unwrapped');
 shading interp;
 colormap(jet);
 colorbar;
-xlabel('(\mum): Position along the flagellum where \phi(s,t) is measured', 'FontSize', 12);
-ylabel('Time t (s): Time at which \phi(s,t) is calculated', 'FontSize', 12);
+xlabel('s (\mum): position along the flagellum', 'FontSize', 12);
+ylabel('t (s): time ', 'FontSize', 12);
 title('Kymograph of Flagellar Tangent Angles \phi(s,t)', 'FontSize', 14);
 axis tight;
 grid off;
 
 %% Part 3:
-
 phi_mean = mean(phi_unwrapped, 2);
 demean_phi = phi_unwrapped - phi_mean;
 [U,S,V] = svd(demean_phi, 'econ');
@@ -123,7 +130,6 @@ hold off;
 
 
 %% Part 5:
-
 phi_recon = zeros(size(phi_unwrapped));
 for i = 1:size(phi_unwrapped, 2)
     phi_recon(:,i) = phi_mean + V_1_fit(i) * U(:,1) + V_2_fit(i) * U(:,2);
