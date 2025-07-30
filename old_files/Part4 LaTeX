@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{setspace}
+\setstretch{1.75}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage[a4paper, total={7in, 9in}]{geometry}
+\setcounter{MaxMatrixCols}{15}
+\begin{document}
+
+  \begin{Large}
+   \textbf{Part (4):}
+\end{Large} 
+\\
+Using the shape and temporal modes that we found in part (3), we now want to find the vectors $V_1$ and $V_2$ that represent the first two dimensions of the shape space. $V_i$ can be found by multiplying the $i$th singular value by the $i$th temporal mode, or
+\\
+\begin{center}
+    $V_i = \sigma_i * \vec{v}_i$
+\end{center}
+
+\\
+as the $V$ matrix found in part (3) represents the temporal modes. We then want to plot $V_1$ against $V_2$, which gives
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\linewidth]{V1vsV2.png}
+    \caption{$V_1$ vs $V_2$}
+    \label{fig:enter-label}
+\end{figure}
+\\
+It can be observed that these points form a closed loop. We want to find the best fitting low dimensional Fourier series $A$cos$(\theta)$ + $B$sin$(\theta)$ to describe the loop. To do this, we want to find the angle$(\theta)$ between the $V_1$ and $V_2$. This can be done with the MATLAB code
+
+\begin{center}
+$\vec{theta}$ = unwrap(atan2(V(:,2),V(:,1)))
+\end{center}
+\\
+\pagebreak
+\\
+Now, we can use least squares to fit $V_i = A_i$cos$(\theta) + B_i$sin$(\theta)$ to find $A$ and $B$ for both $V_1$ and $V_2$. To perform this, we want to solve the least squares equation:
+\\
+\begin{center}
+    $A^TA\vec{x} = A^TB$
+\end{center}
+\\
+
+where $B = V_i$, $A = \begin{bmatrix}
+    \vec{cos(\theta)} && \vec{sin(\theta)}
+\end{bmatrix}$, and $\vec{x} = \begin{bmatrix}
+    A_i && B_i
+\end{bmatrix}^T$. Doing these calculations in MATLAB gives
+\\
+\begin{eqnarray}
+    V_1 &\approx& 4.2925\cos(\theta) - 0.1475\sin(\theta) \nonumber
+    \\
+    V_2 &\approx& -0.1124\cos(\theta) + 4.2011\sin(\theta) \nonumber
+\end{eqnarray}
+\\
+Plotting these best fit series against the data gives
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Fourier.png}
+    \caption{Best Fit Fourier Series}
+    \label{fig:enter-label}
+\end{figure} 
+
+\end{document}
