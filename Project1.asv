@@ -88,7 +88,7 @@ for k = 1:4
 end
 title('First 4 Shape Modes');
 xlabel('Positions s_j along the flagellum');
-ylabel('u_k(j)');
+ylabel('u_k(j');
 legend show;
 hold off;
 
