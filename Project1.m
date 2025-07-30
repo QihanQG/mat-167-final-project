@@ -3,9 +3,9 @@
 clear; clc; close all;
 load('fluidE.mat');
 
-% m = Number of points along the flagellum you tracked.
-% n = number of frames(time steps) recorded
 [m,n] = size(XX);
+% m = Number of points along the flagellum we tracked.
+% n = number of frames(time steps) recorded
 
 disp('Data:');
 disp(['Number of spatial points: ', num2str(m)]);
@@ -54,12 +54,16 @@ for i = 1:80
     phi_unwrapped(:,i) = unwrap(phi(:,i));
 end
 
-
+%Physical axes
 delta_s = space_scale; % Distance between two adjacent points
 delta_t = time_scale;  % Time between frames
 
-s = (0:size(phi_unwrapped,1)-1)' * delta_s; % Position where phi is defined
-t = (0:n-1)' * delta_t; % When phi is calculated                   
+% s = [0*space_scale, 1*space_scale, 2*space_scale, ...]
+s = (0:size(phi_unwrapped,1)-1)' * delta_s; % Position where phi is defined.
+t = (0:n-1)' * delta_t; % When phi is calculated       
+
+disp('Unwrapped tangent-angle matrix φ (rows = s_j, cols = t_i):');
+disp(phi_unwrapped);
 
 figure; clf;
 pcolor(s, t, phi_unwrapped');
