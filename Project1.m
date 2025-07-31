@@ -66,13 +66,18 @@ disp('Unwrapped tangent-angle matrix φ (rows = s_j, cols = t_i):');
 disp(phi_unwrapped);
 
 figure; clf;
-pcolor(s, t, phi_unwrapped');
+h = pcolor(s, t, phi_unwrapped');
 shading interp;
 colormap(jet);
-colorbar;
+cb = colorbar;
+cb.Label.Interpreter = 'latex';
+cb.Label.String = '$\phi\;(\!^\circ)$';
+cb.Label.FontSize = 12;
+cb.Ticks = [-pi, -pi/2, 0, pi/2, pi];
+cb.TickLabels  = {'-180\circ','-90\circ','0\circ','90\circ','180\circ'};
 xlabel('s (\mum): position along the flagellum', 'FontSize', 12);
-ylabel('t (s): time ', 'FontSize', 12);
-title('Kymograph of Flagellar Tangent Angles \phi(s,t)', 'FontSize', 14);
+ylabel('t (s): time','FontSize', 12);
+title('Kymograph of Flagellar Tangent Angles $\phi(s,t)$', 'Interpreter','latex','FontSize',14);
 axis tight;
 grid off;
 
