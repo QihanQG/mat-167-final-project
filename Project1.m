@@ -62,8 +62,8 @@ delta_t = time_scale;  % Time between frames
 s = (0:size(phi_unwrapped,1)-1)' * delta_s; % Position where phi is defined.
 t = (0:n-1)' * delta_t; % When phi is calculated       
 
-disp('Unwrapped tangent-angle matrix φ (rows = s_j, cols = t_i):');
-disp(phi_unwrapped);
+%disp('Unwrapped tangent-angle matrix φ (rows = s_j, cols = t_i):');
+%disp(phi_unwrapped);
 
 figure; clf;
 h = pcolor(s, t, phi_unwrapped');
@@ -108,13 +108,17 @@ ylabel('v_k');
 legend show;
 hold off;
 
-% Plot cumulative variance explained
 s = diag(S);
 figure;
 plot(cumsum(s.^2)./sum(s.^2), 'bo-', 'MarkerFaceColor','b','MarkerSize',6);
 xlabel('kth Singular Value');
 ylabel('% Information Retained');
 title('Strength of Singular Values');
+
+%print retained variance
+retained =cumsum(s.^2)./sum(s.^2);
+fprintf('Two‐mode variance retained: %.2f%%\n', retained(2)*100);
+
 
 %% Part 4: 
 
@@ -156,7 +160,7 @@ end
 X_recon = zeros(m, n);
 Y_recon = zeros(m, n);
 figure;
-for i = 1:10
+for i = 1:12
     % Original positions
     x_og = zeros(m, 1);
     y_og = zeros(m, 1);
