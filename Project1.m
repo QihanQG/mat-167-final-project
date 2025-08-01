@@ -28,7 +28,7 @@ title('All flagellar shapes over time');
 
 % Plot first few time steps
 figure; clf;
-for i = 1:5
+for i = 1:12
     plot(XX(:,i), YY(:,i));
     hold on;
 end
@@ -37,7 +37,7 @@ axis equal;  % Make sure  x and y scales match, So that flagellar curvature isn'
 grid on;
 xlabel('X  (\mum)');
 ylabel('Y  (\mum)');
-title('First 5 time steps');
+title('First 12 time steps (one beat)');
 
 %% Part 2
 
@@ -151,6 +151,14 @@ legend('Original Data','Least Squares Approximation')
 hold off;
 
 
+p = polyfit(t, theta, 1);        % fit theta = p(1)*t + p(2)
+omega = p(1);                    % rad/s
+frequency = omega / (2*pi);      % Hz
+T = 1 / frequency;               % seconds
+
+fprintf('Estimated beat period = %.4f s (%.1f Hz)\n', T, frequency);
+
+
 %% Part 5:
 phi_recon = zeros(size(phi_unwrapped));
 for i = 1:size(phi_unwrapped, 2)
@@ -188,3 +196,4 @@ title('Original vs Reconstructed Shapes');
 legend('Original', 'Reconstructed');
 axis equal;
 grid on;
+
